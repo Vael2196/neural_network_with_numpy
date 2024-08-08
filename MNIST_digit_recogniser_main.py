@@ -1,3 +1,6 @@
+#Author: Vadim Filyakin
+#Last-modified: 08/08/24
+
 import numpy as np
 import pandas as pnd
 from matplotlib import pyplot as ppl
