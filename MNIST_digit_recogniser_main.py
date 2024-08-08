@@ -27,10 +27,10 @@ _,m_train = x_train.shape
 
 def init_params():
     "initialises parameters for Bayes' theorem"
-    W1 = np.random.rand(10, 784) - 0.5
-    b1 = np.random.rand(10, 1) - 0.5
-    W2 = np.random.rand(10, 10) - 0.5
-    b2 = np.random.rand(10, 1) - 0.5
+    W1 = np.random.normal(size=(10, 784)) * np.sqrt(1./(784))
+    b1 = np.random.normal(size=(10, 1)) * np.sqrt(1./10)
+    W2 = np.random.normal(size=(10, 10)) * np.sqrt(1./20)
+    b2 = np.random.normal(size=(10, 1)) * np.sqrt(1./(784))
     return W1, b1, W2, b2
 
 def ReLU(z):
@@ -54,6 +54,7 @@ def forward_prop(W1, b1, W2, b2, x):
     return Z1, A1, Z2, A2
 
 def one_col_matrix(y):
+    "Creates a matrix with one at the position of the predicted number"
     one_col_y = np.zeros((y.size, y.max() + 1))
     one_col_y[np.arange(y.size), y] = 1
     one_col_y = one_col_y.T
@@ -101,3 +102,24 @@ def gradient_descent(x, y, alpha, iterations):
     return W1, b1, W2, b2
 
 W1, b1, W2, b2 = gradient_descent(x_train, y_train, 0.10, 500)
+
+def make_predictions(x, W1, b1, W2, b2):
+    _, _, _, A2 = forward_prop(W1, b1, W2, b2, x)
+    predictions = get_predictions(A2)
+    return predictions
+
+def test_prediction(index, W1, b1, W2, b2):
+    current_image = x_train[:, index, None]
+    prediction = make_predictions(x_train[:, index, None], W1, b1, W2, b2)
+    label = y_train[index]
+    print("Prediction: ", prediction)
+    print("Label: ", label)
+    
+    current_image = current_image.reshape((28, 28)) * 255
+    ppl.gray()
+    ppl.imshow(current_image, interpolation='nearest')
+    ppl.show()
+
+test_prediction(6, W1, b1, W2, b2)
+# dev_predictions = make_predictions(x_dev, W1, b1, W2, b2)
+# get_accuracy(dev_predictions, y_dev)
